@@ -1,114 +1,133 @@
 #include "../../include/server/server.h"
 
-short IS_RUNING = TRUE;
-
-void crtl_handler(int sig)
-{
-    IS_RUNING = FALSE;
-    printf("ctrl c\n");
-}
-
-void clear_buffers(server_t *server)
-{
-    memset(server->server_message, '\0', sizeof(server->server_message));
-    memset(server->client_message, '\0', sizeof(server->client_message));
-}
-
 int init_server_struct(server_t *server)
 {
-    clear_buffers(server);
+    for (size_t i = 0; i < MAX_CLIENTS; i++) {
+		server->client_socket[i] = 0;
+	}
 
-    server->socket_desc = socket(AF_INET, SOCK_STREAM, 0);
+    server->master_socket = socket(AF_INET , SOCK_STREAM , 0);
+    if (server->master_socket == -1) {
+		return 84;
+	}
 
-    if (server->socket_desc == -1){
-        printf("Error while creating socket\n");
-        return 84;
-    }
-    printf("Socket created successfully\n");
+    server->address.sin_family = AF_INET;
+	server->address.sin_addr.s_addr = INADDR_ANY;
+	server->address.sin_port = htons(PORT);
 
-    server->server_addr.sin_family = AF_INET;
-    server->server_addr.sin_port = htons(2000);
-    server->server_addr.sin_addr.s_addr = INADDR_ANY;
-
-    if (bind(server->socket_desc, (struct sockaddr *)&server->server_addr, sizeof(server->server_addr)) < 0){
-        printf("Couldn't bind to the port\n");
-        return 84;
-    }
-    printf("Done with binding\n");
+	if (bind(server->master_socket, (struct sockaddr *)&server->address,
+    sizeof(server->address)) < 0) {
+		return 84;
+	}
+	printf("Listener on port %d \n", PORT);
     return 0;
 }
 
 int listening(server_t *server)
 {
-    if (listen(server->socket_desc, 1) < 0){
-        printf("Error while listening\n");
-        return 84;
-    }
-    printf("\nListening for incoming connections.....\n");
+    if (listen(server->master_socket, MAX_CLIENTS) < 0) {
+		return 84;
+	}
+    server->addrlen = sizeof(server->address);
     return 0;
 }
 
-int accept_incomming_conncections(server_t *server)
+int get_max_socket_descriptor(server_t *server)
 {
-    server->client_size = sizeof(server->client_addr);
-    server->client_sock = accept(server->socket_desc, (struct sockaddr*)&server->client_addr, &server->client_size);
-    
-    if (server->client_sock < 0){
-        printf("Can't accept\n");
+    FD_ZERO(&server->readfds);
+    FD_SET(server->master_socket, &server->readfds);
+    server->max_sd = server->master_socket;
+
+    for (size_t i = 0 ; i < MAX_CLIENTS; i++) {
+        if (server->client_socket[i] > 0)
+            FD_SET(server->client_socket[i], &server->readfds);
+        if (server->client_socket[i] > server->max_sd)
+            server->max_sd = server->client_socket[i];
+    }
+    return 0;
+}
+
+int accept_incomming_actions(server_t *server)
+{
+    if (select(server->max_sd + 1, &server->readfds, NULL, NULL, NULL) == -1) {
         return 84;
     }
-    printf("Client connected at IP: %s and port: %i\n", inet_ntoa(server->client_addr.sin_addr), ntohs(server->client_addr.sin_port));
+    return 0;
+}
+
+int add_incomming_connection(server_t *server)
+{
+    int new_socket;
+
+    if (FD_ISSET(server->master_socket, &server->readfds)) {
+        new_socket = accept(server->master_socket,
+        (struct sockaddr *)&server->address, (socklen_t*)&server->addrlen);
+        if (new_socket < 0) {
+            return 84;
+        }
+        printf("New connection, socket fd is %d, ip is: %s, port: %d\n",
+        new_socket, inet_ntoa(server->address.sin_addr),
+        ntohs(server->address.sin_port));
+        for (size_t i = 0; i < MAX_CLIENTS; i++) {
+            if (server->client_socket[i] == 0) {
+                server->client_socket[i] = new_socket;
+                printf("Adding to list of sockets as %d\n", i);   
+                break;
+            }
+        }
+    }
+    return 0;
+}
+
+int disconnect_client(server_t *server, int i)
+{
+    getpeername(server->client_socket[i], (struct sockaddr *)&server->address,
+    (socklen_t*)&server->addrlen);
+    printf("Host disconnected, ip: %s, port: %d\n",
+    inet_ntoa(server->address.sin_addr), ntohs(server->address.sin_port));
+    close(server->client_socket[i]);
+    server->client_socket[i] = 0;
+    return 0;
+}
+
+int input_output(server_t *server)
+{
+    char buffer[1025];
+    int valread;
+
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        if (FD_ISSET(server->client_socket[i], &server->readfds)) {
+            valread = read(server->client_socket[i], buffer, 1024);
+            if (valread == 0) {
+                disconnect_client(server, i);
+            }
+            else {
+                buffer[valread] = '\0';
+                send(server->client_socket[i], buffer, strlen(buffer), 0);
+            }
+        }
+    }
     return 0;
 }
 
 int loop_server(server_t *server)
 {
-    if (recv(server->client_sock, server->client_message, sizeof(server->client_message), 0) < 0){
-        printf("Couldn't receive\n");
-        return 84;
-    }
-    printf("Msg from client: %s\n", server->client_message);
-    
-    // Respond to client:
-    strcpy(server->server_message, "This is the server's message.");
-    
-    if (send(server->client_sock, server->server_message, strlen(server->server_message), 0) < 0){
-        printf("Can't send\n");
-        return 84;
-    }
-    clear_buffers(server);
+    get_max_socket_descriptor(server);
+    accept_incomming_actions(server);
+    add_incomming_connection(server);
+    input_output(server);
     return 0;
 }
 
-int close_server(server_t *server)
-{
-    close(server->client_sock);
-    close(server->socket_desc);
-}
-
-int main(void)
+int main(int argc , char *argv[])
 {
     server_t server;
 
-    signal(SIGINT, crtl_handler);
     init_server_struct(&server);
-    
-    // Listen for clients:
     listening(&server);
-    
-    // Accept an incoming connection:
-    accept_incomming_conncections(&server);
-    
-    // Receive client's message:
-    while (1) {
+
+    while(TRUE) {
         loop_server(&server);
-        if (IS_RUNING == FALSE) {
-            break;
-        }
-    }
-    printf("A = %d", IS_RUNING);
-    // Closing the socket:
-    close_server(&server);
-    
-    return 0;
+    }		
+	return 0;
 }
