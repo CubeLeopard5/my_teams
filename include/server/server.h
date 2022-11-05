@@ -14,8 +14,8 @@
 	
 #define TRUE 1
 #define FALSE 0
-#define PORT 8888
-#define MAX_CLIENTS 30
+#define DEFAULT_PORT 4000
+#define MAX_CLIENTS 10
 
 typedef struct server_s
 {

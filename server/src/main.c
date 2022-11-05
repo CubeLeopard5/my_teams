@@ -1,6 +1,6 @@
 #include "../../include/server/server.h"
 
-int init_server_struct(server_t *server)
+int init_server_struct(server_t *server, int port)
 {
     for (size_t i = 0; i < MAX_CLIENTS; i++) {
 		server->client_socket[i] = 0;
@@ -13,13 +13,13 @@ int init_server_struct(server_t *server)
 
     server->address.sin_family = AF_INET;
 	server->address.sin_addr.s_addr = INADDR_ANY;
-	server->address.sin_port = htons(PORT);
+	server->address.sin_port = htons(port);
 
 	if (bind(server->master_socket, (struct sockaddr *)&server->address,
     sizeof(server->address)) < 0) {
 		return 84;
 	}
-	printf("Listener on port %d \n", PORT);
+	printf("Listener on port %d \n", port);
     return 0;
 }
 
@@ -100,8 +100,7 @@ int input_output(server_t *server)
             valread = read(server->client_socket[i], buffer, 1024);
             if (valread == 0) {
                 disconnect_client(server, i);
-            }
-            else {
+            } else {
                 buffer[valread] = '\0';
                 send(server->client_socket[i], buffer, strlen(buffer), 0);
             }
@@ -119,11 +118,15 @@ int loop_server(server_t *server)
     return 0;
 }
 
-int main(int argc , char *argv[])
+int main(int ac , char **av)
 {
     server_t server;
+    int port = DEFAULT_PORT;
 
-    init_server_struct(&server);
+    if (ac == 2 && atoi(av[1]) > 0) {
+        port = atoi(av[1]);
+    }
+    init_server_struct(&server, port);
     listening(&server);
 
     while(TRUE) {

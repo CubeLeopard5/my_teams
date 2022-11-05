@@ -1,74 +1,89 @@
 #include "../../include/client/client.h"
 
-short IS_RUNING = TRUE;
-
-void crtl_handler(int sig)
+void clear_buffers(client_t *client)
 {
-    IS_RUNING = FALSE;
-    printf("ctrl c\n");
+    memset(client->server_message,'\0',sizeof(client->server_message));
+    memset(client->client_message,'\0',sizeof(client->client_message));
 }
 
-int main(void)
+int init_struct_client(client_t *client, char *ip, int port)
 {
-    signal(SIGINT, crtl_handler);
-    int socket_desc;
-    struct sockaddr_in server_addr;
-    char server_message[2000], client_message[2000];
-    
-    // Clean buffers:
-    memset(server_message,'\0',sizeof(server_message));
-    memset(client_message,'\0',sizeof(client_message));
-    
-    // Create socket:
-    socket_desc = socket(AF_INET, SOCK_STREAM, 0);
-    
-    if(socket_desc < 0){
-        printf("Unable to create socket\n");
-        return -1;
+    client->socket_desc = socket(AF_INET, SOCK_STREAM, 0);
+    if (client->socket_desc < 0) {
+        return 84;
     }
-    
     printf("Socket created successfully\n");
-    
-    // Set port and IP the same as server-side:
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(8888);
-    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    
-    // Send connection request to server:
-    if(connect(socket_desc, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0){
-        printf("Unable to connect\n");
-        return -1;
+
+    client->server_addr.sin_family = AF_INET;
+    client->server_addr.sin_port = htons(port);
+    client->server_addr.sin_addr.s_addr = inet_addr(ip);
+    return 0;
+}
+
+int connect_to_server(client_t *client)
+{
+    if(connect(client->socket_desc, (struct sockaddr*)
+    &client->server_addr, sizeof(client->server_addr)) < 0) {
+        return 84;
     }
     printf("Connected with server successfully\n");
-    
-    // Get input from the user:
-    while (1) {
-        printf("Enter message: ");
-        fgets(client_message, 2000, stdin);
-        client_message[strcspn(client_message, "\n")] = 0;
-        
-        // Send the message to server:
-        if(send(socket_desc, client_message, strlen(client_message), 0) < 0){
-            printf("Unable to send message\n");
-            return -1;
-        }
-        
-        // Receive the server's response:
-        if(recv(socket_desc, server_message, sizeof(server_message), 0) < 0){
-            printf("Error while receiving server's msg\n");
-            return -1;
-        }
-        
-        printf("Server's response: %s\n",server_message);
-        if (IS_RUNING == FALSE) {
-            break;
-        }
-        memset(server_message,'\0',sizeof(server_message));
-        memset(client_message,'\0',sizeof(client_message));
+    return 0;
+}
+
+int get_client_input(client_t *client)
+{
+    printf("Enter message: ");
+    if (fgets(client->client_message, MAX_LENGTH, stdin) == NULL) {
+        return 84;
     }
-    
-    // Close the socket:
-    close(socket_desc);
-    
+    client->client_message[strcspn(client->client_message, "\n")] = 0;
+    return 0;
+}
+
+int send_msg_to_server(client_t *client)
+{
+    if (send(client->socket_desc, client->client_message,
+    strlen(client->client_message), 0) < 0) {
+        return 84;
+    }
+    return 0;
+}
+
+int rcv_msg_from_server(client_t *client)
+{
+    if (recv(client->socket_desc, client->server_message,
+    sizeof(client->server_message), 0) < 0) {
+        return 84;
+    }
+    printf("Server's response: %s\n", client->server_message);
+    return 84;
+}
+
+int loop_client(client_t *client)
+{
+    get_client_input(client);
+    send_msg_to_server(client);
+    rcv_msg_from_server(client);
+    clear_buffers(client);
+    return 0;
+}
+
+int main(int ac, char **av)
+{
+    client_t client;
+    char *ip;
+    int port;
+
+    if (ac < 3 || atoi(av[1]) == 0 || atoi(av[2]) == 0) {
+        return 84;
+    }
+    init_struct_client(&client, av[1], atoi(av[2]));
+    clear_buffers(&client);
+    connect_to_server(&client);
+
+    while (TRUE) {
+        loop_client(&client);
+    }
+    close(client.socket_desc);
     return 0;
 }
