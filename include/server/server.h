@@ -12,6 +12,7 @@
 #include <netinet/in.h>
 #include <sys/time.h>
 #include <uuid/uuid.h>
+#include <ctype.h>
 	
 #define TRUE 1
 #define FALSE 0
@@ -38,5 +39,15 @@ typedef struct server_s
 }server_t;
 
 static const char *ALLOWED_COMMANDS[] = {"/login", "/send", NULL};
+
+void login(server_t *server, size_t client_nbr, char **command);
+void send_pvt(server_t *server, size_t client_nbr, char **command);
+int listening(server_t *server);
+int init_server_struct(server_t *server, int port);
+char **str_to_word_tab(char *str, char *delim);
+int exec_command(server_t *server, size_t client_nbr, char **command);
+char *remove_extra_spaces(char *str);
+int disconnect_client(server_t *server, int i);
+int loop_server(server_t *server);
 
 #endif

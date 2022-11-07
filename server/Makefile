@@ -7,6 +7,15 @@ CP  	= cp
 CFLAG	=	-g3 -Wall -Wextra -luuid
 
 SRC 	= 	src/main.c 					\
+			src/exec_command.c			\
+			src/init.c					\
+			src/listening.c				\
+			src/loggout.c				\
+			src/login.c					\
+			src/loop_server.c			\
+			src/remove_extra_spaces.c	\
+			src/send.c					\
+			src/str_to_word_tab.c		\
 
 OBJ	 = 	$(SRC:.c=.o)
 
