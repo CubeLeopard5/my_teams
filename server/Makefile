@@ -13,7 +13,7 @@ OBJ	 = 	$(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) -g3 $(OBJ) -o $(NAME) $(CFLAG)
+	$(CC) $(OBJ) -o $(NAME) $(CFLAG)
 	$(CP) $(NAME) ../
 
 clean:

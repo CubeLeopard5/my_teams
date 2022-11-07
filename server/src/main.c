@@ -1,9 +1,18 @@
 #include "../../include/server/server.h"
 
+void init_client_data(client_t *client)
+{
+    client->is_logged = FALSE;
+    client->username = NULL;
+    client->fd = -1;
+    client->uuid = NULL;
+}
+
 int init_server_struct(server_t *server, int port)
 {
     for (size_t i = 0; i < MAX_CLIENTS; i++) {
 		server->client_socket[i] = 0;
+        init_client_data(server->clients_data);
 	}
 
     server->master_socket = socket(AF_INET , SOCK_STREAM , 0);
@@ -90,19 +99,115 @@ int disconnect_client(server_t *server, int i)
     return 0;
 }
 
+void send_pvt(server_t *server, size_t client_nbr, char **command)
+{
+    if (server->clients_data[client_nbr].is_logged == TRUE) {
+        if (command[1]) {
+            for (size_t i = 0; MAX_CLIENTS; i++) {
+                if (server->clients_data[i].is_logged && strcmp(server->clients_data[i].uuid, command[1]) == 0) {
+                    if (command[2]) {
+                        dprintf(server->client_socket[i], command[2]);
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+void login(server_t *server, size_t client_nbr, char **command)
+{
+    uuid_t binuuid;
+    char *uuid = malloc(sizeof(char) * 40);
+
+    if (server->clients_data[client_nbr].is_logged == FALSE) {
+        if (command[1]) {
+            uuid_generate(binuuid);
+            uuid_unparse_upper(binuuid, uuid);
+            server->clients_data[client_nbr].is_logged = TRUE;
+            server->clients_data[client_nbr].username = strdup(command[1]);
+            server->clients_data[client_nbr].uuid =  strdup(uuid);
+            dprintf(server->client_socket[client_nbr], "Loggin %s", uuid);
+        } else {
+            dprintf(server->client_socket[client_nbr], "Error PROUT\n");
+        }
+    } else {
+        dprintf(server->client_socket[client_nbr],
+        "Error 102 User is alreay logged in\n");
+    }
+}
+
+int exec_command(server_t *server, size_t client_nbr, char **command)
+{
+    void (*builtins_functions[])(server_t *server, size_t client_nbr,
+    char **command) = {&login, &send_pvt, NULL};
+
+    if (command == NULL || command[0] == NULL)
+        return 84;
+    for (ssize_t i = 0; ALLOWED_COMMANDS[i] != NULL; i++) {
+        if (strcmp(ALLOWED_COMMANDS[i], command[0]) == 0) {
+            (*builtins_functions[i])(server, client_nbr, command);
+            return i;
+        }
+    }
+    return 84;
+}
+
+short is_valid_char(char c)
+{
+    return (c >= 'A' && c <= 'Z') ||
+    (c >= 'a' && c <= 'z') ||
+    (c >= '0' && c <= '9') ||
+    (c == '.' || c == '/' || c == '-');
+}
+
+int nb_word(const char * str)
+{
+    int nb = 0;
+
+    for (size_t i = 0; str[i];) {
+        for (; str[i] && !is_valid_char(str[i]); i++);
+        if (str[i])
+            nb++;
+        for (; str[i] && is_valid_char(str[i]); i++);
+    }
+    return nb + 1;
+}
+
+char **str_to_word_tab(char *str)
+{
+    int nb = nb_word(str);
+    char **tab = malloc(sizeof(*tab) * nb);
+    int j = 0;
+
+    for (size_t i = 0; str[i];) {
+        for (; str[i] && !is_valid_char(str[i]); i++)
+            str[i] = '\0';
+        if (str[i]) {
+            tab[j] = &(str[i]);
+            j++;
+        }
+        for (; str[i] && is_valid_char(str[i]); i++);
+    }
+    tab[j] = '\0';
+    return tab;
+}
+
 int input_output(server_t *server)
 {
     char buffer[1025];
     int valread;
 
-    for (int i = 0; i < MAX_CLIENTS; i++) {
+    for (size_t i = 0; i < MAX_CLIENTS; i++) {
         if (FD_ISSET(server->client_socket[i], &server->readfds)) {
             valread = read(server->client_socket[i], buffer, 1024);
             if (valread == 0) {
                 disconnect_client(server, i);
             } else {
                 buffer[valread] = '\0';
-                send(server->client_socket[i], buffer, strlen(buffer), 0);
+                exec_command(server, i, str_to_word_tab(buffer));
+                //dprintf(server->client_socket[i], buffer);
+                //send(server->client_socket[i], buffer, strlen(buffer), 0);
             }
         }
     }
