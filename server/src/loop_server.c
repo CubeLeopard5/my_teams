@@ -12,7 +12,7 @@ int get_max_socket_descriptor(server_t *server)
         if (server->client_socket[i] > server->max_sd)
             server->max_sd = server->client_socket[i];
     }
-    return 0;
+    return server->max_sd;
 }
 
 int accept_incomming_actions(server_t *server)
@@ -29,7 +29,7 @@ int add_incomming_connection(server_t *server)
 
     if (FD_ISSET(server->master_socket, &server->readfds)) {
         new_socket = accept(server->master_socket,
-        (struct sockaddr *)&server->address, (socklen_t*)&server->addrlen);
+        (struct sockaddr *)&server->address, (socklen_t *)&server->addrlen);
         if (new_socket < 0) {
             return 84;
         }
@@ -40,7 +40,7 @@ int add_incomming_connection(server_t *server)
             if (server->client_socket[i] == 0) {
                 server->client_socket[i] = new_socket;
                 printf("Adding to list of sockets as %d\n", i);   
-                break;
+                return 0;
             }
         }
     }
@@ -55,10 +55,13 @@ int input_output(server_t *server)
     for (size_t i = 0; i < MAX_CLIENTS; i++) {
         if (FD_ISSET(server->client_socket[i], &server->readfds)) {
             valread = read(server->client_socket[i], buffer, 1024);
-            if (valread == 0) {
+            if (valread == -1) {
+                printf("Error\n");
+            } else if (valread == 0) {
                 disconnect_client(server, i);
             } else {
                 buffer[valread] = '\0';
+                //send(server->client_socket[1], buffer, strlen(buffer), 0);
                 exec_command(server, i, str_to_word_tab(remove_extra_spaces(buffer), " "));
             }
         }
@@ -69,8 +72,14 @@ int input_output(server_t *server)
 int loop_server(server_t *server)
 {
     get_max_socket_descriptor(server);
-    accept_incomming_actions(server);
-    add_incomming_connection(server);
+    if (accept_incomming_actions(server) != 0) {
+        printf("Unable to select");
+        return 84;
+    }
+    if (add_incomming_connection(server) != 0) {
+        printf("Unable to accept socket");
+        return 84;
+    }
     input_output(server);
     return 0;
 }
