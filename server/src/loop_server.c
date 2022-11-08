@@ -55,13 +55,10 @@ int input_output(server_t *server)
     for (size_t i = 0; i < MAX_CLIENTS; i++) {
         if (FD_ISSET(server->client_socket[i], &server->readfds)) {
             valread = read(server->client_socket[i], buffer, 1024);
-            if (valread == -1) {
-                printf("Error\n");
-            } else if (valread == 0) {
+            if (valread == 0) {
                 disconnect_client(server, i);
             } else {
                 buffer[valread] = '\0';
-                //send(server->client_socket[1], buffer, strlen(buffer), 0);
                 exec_command(server, i, str_to_word_tab(remove_extra_spaces(buffer), " "));
             }
         }
