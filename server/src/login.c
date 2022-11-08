@@ -10,7 +10,10 @@ int log_user(server_t *server, size_t client_nbr, char *username)
     server->clients_data[client_nbr].is_logged = TRUE;
     server->clients_data[client_nbr].username = strdup(username);
     server->clients_data[client_nbr].uuid =  strdup(uuid);
-    dprintf(server->client_socket[client_nbr], "Loggin %s", uuid);
+    if (dprintf(server->client_socket[client_nbr], "Loggin %s", uuid) < 0) {
+        perror("Error when sending message\n");
+        return 84;
+    }
     return 0;
 }
 
@@ -20,10 +23,16 @@ void login(server_t *server, size_t client_nbr, char **command)
         if (command[1]) {
             log_user(server, client_nbr, command[1]);
         } else {
-            dprintf(server->client_socket[client_nbr], "Error PROUT\n");
+            if (dprintf(server->client_socket[client_nbr], "No username provided\n") < 0) {
+                perror("Error when sending message\n");
+                return;
+            }
         }
     } else {
-        dprintf(server->client_socket[client_nbr],
-        "Error 102 User is alreay logged in\n");
+        if (dprintf(server->client_socket[client_nbr],
+        "Error user is alreay logged in\n") < 0) {
+            perror("Error when sending message\n");
+            return;
+        }
     }
 }

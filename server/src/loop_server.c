@@ -18,6 +18,7 @@ int get_max_socket_descriptor(server_t *server)
 int accept_incomming_actions(server_t *server)
 {
     if (select(server->max_sd + 1, &server->readfds, NULL, NULL, NULL) == -1) {
+        perror("Unable to use select\n");
         return 84;
     }
     return 0;
@@ -31,6 +32,7 @@ int add_incomming_connection(server_t *server)
         new_socket = accept(server->master_socket,
         (struct sockaddr *)&server->address, (socklen_t *)&server->addrlen);
         if (new_socket < 0) {
+            perror("Unable to accept client\n");
             return 84;
         }
         printf("New connection, socket fd is %d, ip is: %s, port: %d\n",
@@ -56,10 +58,14 @@ int input_output(server_t *server)
         if (FD_ISSET(server->client_socket[i], &server->readfds)) {
             valread = read(server->client_socket[i], buffer, 1024);
             if (valread == 0) {
-                disconnect_client(server, i);
+                if (disconnect_client(server, i) != 0) {
+                    return 84;
+                }
             } else {
                 buffer[valread] = '\0';
-                exec_command(server, i, str_to_word_tab(remove_extra_spaces(buffer), " "));
+                if (exec_command(server, i, str_to_word_tab(remove_extra_spaces(buffer), " ")) == 84) {
+                    return 84;
+                }
             }
         }
     }
@@ -70,13 +76,13 @@ int loop_server(server_t *server)
 {
     get_max_socket_descriptor(server);
     if (accept_incomming_actions(server) != 0) {
-        printf("Unable to select");
         return 84;
     }
     if (add_incomming_connection(server) != 0) {
-        printf("Unable to accept socket");
         return 84;
     }
-    input_output(server);
+    if (input_output(server) != 0) {
+        return 84;
+    }
     return 0;
 }

@@ -1,11 +1,15 @@
 #include "../../include/client/client.h"
 
-void end_client(client_t *client)
+int end_client(client_t *client)
 {
     if (client->is_logged == TRUE) {
         client->is_logged = FALSE;
         free(client->uuid);
         free(client->username);
     }
-    close(client->socket_fd);
+    if (close(client->socket_fd) == -1) {
+        perror("Error while closing socket\n");
+        return 84;
+    }
+    return 0;
 }

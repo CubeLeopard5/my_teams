@@ -26,11 +26,11 @@ typedef struct client_s
     short is_logged;
 }client_t;
 
-void end_client(client_t *client);
+int end_client(client_t *client);
 int init_struct_client(client_t *client, char *ip, int port);
 int loop_client(client_t *client);
 int connect_to_server(client_t *client);
 int send_message_to_server(client_t *client, char *msg);
-void read_command(client_t *client);
+int receive_server_message(client_t *client);
 
 #endif

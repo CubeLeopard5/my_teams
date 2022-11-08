@@ -7,6 +7,7 @@ int init_struct_client(client_t *client, char *ip, int port)
     client->uuid = NULL;
     client->socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (client->socket_fd < 0) {
+        perror("Unable to create socket");
         return 84;
     }
     printf("Socket created successfully\n");

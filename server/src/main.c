@@ -9,16 +9,13 @@ int main(int ac , char **av)
         port = atoi(av[1]);
     }
     if (init_server_struct(&server, port) != 0) {
-        printf("Unable to init server structure");
         return 84;
     }
     if (listening(&server) != 0) {
-        printf("Unable to listen");
         return 84;
     }
     while(TRUE) {
         if (loop_server(&server) != 0) {
-            printf("Error in loop");
             return 84;
         }
     }
