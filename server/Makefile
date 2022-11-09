@@ -18,6 +18,7 @@ SRC 	= 	src/main.c 					\
 			src/builtins/send_pvt.c		\
 			src/str_to_word_tab.c		\
 			src/get_nb_word.c			\
+			src/read.c					\
 
 OBJ	 = 	$(SRC:.c=.o)
 

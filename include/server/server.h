@@ -51,5 +51,6 @@ char *remove_extra_spaces(char *str);
 int disconnect_client(server_t *server, int *fd);
 int loop_server(server_t *server);
 int get_nb_word(char **tab);
+char *read_message_from_client(int fd);
 
 #endif
