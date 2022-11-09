@@ -49,20 +49,35 @@ int add_incomming_connection(server_t *server)
     return 0;
 }
 
+char *read_message_from_client(int fd)
+{
+    char *buffer = malloc(sizeof(char) * 1024);
+    int valread = -1;
+
+    valread = read(fd, buffer, 1024);
+    if (valread == -1) {
+        perror("Error while reading client message\n");
+        return NULL;
+    } else if (valread == 0) {
+        return NULL;
+    } else {
+        buffer[valread] = '\0';
+        return buffer;
+    }
+}
+
 int input_output(server_t *server)
 {
-    char buffer[1025];
-    int valread;
+    char *buffer;
 
     for (size_t i = 0; i < MAX_CLIENTS; i++) {
         if (FD_ISSET(server->client_socket[i], &server->readfds)) {
-            valread = read(server->client_socket[i], buffer, 1024);
-            if (valread == 0) {
-                if (disconnect_client(server, i) != 0) {
+            buffer = read_message_from_client(server->client_socket[i]);
+            if (buffer == NULL) {
+                if (disconnect_client(server, &server->client_socket[i]) != 0) {
                     return 84;
                 }
             } else {
-                buffer[valread] = '\0';
                 if (exec_command(server, i, str_to_word_tab(remove_extra_spaces(buffer), " ")) == 84) {
                     return 84;
                 }

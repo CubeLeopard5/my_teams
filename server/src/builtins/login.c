@@ -1,4 +1,4 @@
-#include "../../include/server/server.h"
+#include "../../../include/server/server.h"
 
 int log_user(server_t *server, size_t client_nbr, char *username)
 {
@@ -10,10 +10,7 @@ int log_user(server_t *server, size_t client_nbr, char *username)
     server->clients_data[client_nbr].is_logged = TRUE;
     server->clients_data[client_nbr].username = strdup(username);
     server->clients_data[client_nbr].uuid =  strdup(uuid);
-    if (dprintf(server->client_socket[client_nbr], "Loggin %s", uuid) < 0) {
-        perror("Error when sending message\n");
-        return 84;
-    }
+    send_message_to_client(server, client_nbr, uuid);
     return 0;
 }
 
@@ -23,16 +20,9 @@ void login(server_t *server, size_t client_nbr, char **command)
         if (command[1]) {
             log_user(server, client_nbr, command[1]);
         } else {
-            if (dprintf(server->client_socket[client_nbr], "No username provided\n") < 0) {
-                perror("Error when sending message\n");
-                return;
-            }
+            send_message_to_client(server, client_nbr, "No username provided\n");
         }
     } else {
-        if (dprintf(server->client_socket[client_nbr],
-        "Error user is alreay logged in\n") < 0) {
-            perror("Error when sending message\n");
-            return;
-        }
+        send_message_to_client(server, client_nbr, "Error user is alreay logged in\n");
     }
 }

@@ -11,11 +11,13 @@ SRC 	= 	src/main.c 					\
 			src/init.c					\
 			src/listening.c				\
 			src/loggout.c				\
-			src/login.c					\
+			src/builtins/login.c		\
 			src/loop_server.c			\
 			src/remove_extra_spaces.c	\
 			src/send.c					\
+			src/builtins/send_pvt.c		\
 			src/str_to_word_tab.c		\
+			src/get_nb_word.c			\
 
 OBJ	 = 	$(SRC:.c=.o)
 

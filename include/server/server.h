@@ -40,6 +40,7 @@ typedef struct server_s
 
 static const char *ALLOWED_COMMANDS[] = {"/login", "/send", NULL};
 
+int send_message_to_client(server_t *server, size_t client_nbr, char *msg);
 void login(server_t *server, size_t client_nbr, char **command);
 void send_pvt(server_t *server, size_t client_nbr, char **command);
 int listening(server_t *server);
@@ -47,7 +48,8 @@ int init_server_struct(server_t *server, int port);
 char **str_to_word_tab(char *str, char *delim);
 int exec_command(server_t *server, size_t client_nbr, char **command);
 char *remove_extra_spaces(char *str);
-int disconnect_client(server_t *server, int i);
+int disconnect_client(server_t *server, int *fd);
 int loop_server(server_t *server);
+int get_nb_word(char **tab);
 
 #endif
