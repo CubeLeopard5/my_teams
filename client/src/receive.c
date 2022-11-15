@@ -17,6 +17,11 @@ int receive_server_message(client_t *client)
         return 0;
     }
     buffer[len] = '\0';
-    printf("message received = %s\n", buffer);
+    if (strcmp(buffer, "EXIT") == 0) {
+        end_client(client);
+        exit(0);
+    } else {
+        printf("message received = %s\n", buffer);
+    }
     return 0;
 }

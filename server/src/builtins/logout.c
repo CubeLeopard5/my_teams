@@ -19,6 +19,7 @@ void quit(server_t *server, size_t client_nbr, char **command)
     if (get_nb_word(command) != 1) {
         send_message_to_client(server, client_nbr, "Invalid number of arguments");
     } else {
+        send_message_to_client(server, client_nbr, "EXIT");
         disconnect_client(server, &server->client_socket[client_nbr]);
     }
 }

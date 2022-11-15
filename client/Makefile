@@ -8,7 +8,7 @@ CFLAG	=	-g3 -Wall -Wextra -luuid
 
 SRC 	= 	src/main.c 					\
 			src/send.c					\
-			src/read.c					\
+			src/receive.c				\
 			src/loop_client.c			\
 			src/init.c					\
 			src/disconnect.c			\
