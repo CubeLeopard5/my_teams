@@ -13,6 +13,8 @@ SRC 	= 	src/main.c 					\
 			src/init.c					\
 			src/disconnect.c			\
 			src/connect.c				\
+			src/builtins/quit.c			\
+			src/exec_command.c			\
 
 OBJ	 = 	$(SRC:.c=.o)
 

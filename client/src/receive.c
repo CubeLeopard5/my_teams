@@ -17,9 +17,8 @@ int receive_server_message(client_t *client)
         return 0;
     }
     buffer[len] = '\0';
-    if (strcmp(buffer, "EXIT") == 0) {
-        end_client(client);
-        exit(0);
+    if (exec_command(client, buffer) == 84) {
+        return 84;
     } else {
         printf("message received = %s\n", buffer);
     }
