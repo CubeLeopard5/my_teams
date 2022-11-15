@@ -38,7 +38,7 @@ typedef struct server_s
     client_t clients_data[MAX_CLIENTS];
 }server_t;
 
-static const char *ALLOWED_COMMANDS[] = {"/login", "/send", NULL};
+static const char *ALLOWED_COMMANDS[] = {"/login", "/send", "/logout", "/quit", NULL};
 
 int send_message_to_client(server_t *server, size_t client_nbr, char *msg);
 void login(server_t *server, size_t client_nbr, char **command);
@@ -52,5 +52,8 @@ int disconnect_client(server_t *server, int *fd);
 int loop_server(server_t *server);
 int get_nb_word(char **tab);
 char *read_message_from_client(int fd);
+void logout(server_t *server, size_t client_nbr, char **command);
+void quit(server_t *server, size_t client_nbr, char **command);
+void init_client_data(client_t *client);
 
 #endif

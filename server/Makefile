@@ -10,7 +10,7 @@ SRC 	= 	src/main.c 					\
 			src/exec_command.c			\
 			src/init.c					\
 			src/listening.c				\
-			src/loggout.c				\
+			src/builtins/logout.c		\
 			src/builtins/login.c		\
 			src/loop_server.c			\
 			src/remove_extra_spaces.c	\

@@ -2,12 +2,25 @@
 
 char *remove_extra_spaces(char *str)
 {
-    int x = 0;
+    char *newString = malloc(sizeof(char) * strlen(str));
+    int i = 0;
+    int j = 0;
 
-    for(int i = 0; str[i] != '\0'; i++)
-        if (!isspace(str[i]) || (i > 0 && !isspace(str[i - 1])))
-            str[x++] = str[i];
-    str[x] = '\0';
-    
-    return str;
+    for (i; str[i] == ' '; i++);
+    while (str[i] != '\0') {
+        if (str[i] == ' ') {
+            newString[j] = str[i];
+            i++;
+            j++;
+            while (str[i] == ' ') {
+                i++;
+            }
+        } else {
+            newString[j] = str[i];
+            i++;
+            j++;
+        }
+    }
+    newString[j - 1] = '\0';
+    return newString;
 }

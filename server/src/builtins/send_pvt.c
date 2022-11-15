@@ -15,7 +15,7 @@ void send_pvt(server_t *server, size_t client_nbr, char **command)
     int nb_client = -1;
 
     if (get_nb_word(command) != 3) {
-        send_message_to_client(server, client_nbr, "Invalid number of arguments\n");
+        send_message_to_client(server, client_nbr, "Invalid number of arguments");
         return;
     }
     if (server->clients_data[client_nbr].is_logged == TRUE) {
@@ -24,6 +24,6 @@ void send_pvt(server_t *server, size_t client_nbr, char **command)
             send_message_to_client(server, nb_client, command[2]);
         }
     } else {
-        send_message_to_client(server, client_nbr, "You need to be logged before sending a message\n");
+        send_message_to_client(server, client_nbr, "You need to be logged before sending a message");
     }
 }

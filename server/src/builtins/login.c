@@ -16,13 +16,17 @@ int log_user(server_t *server, size_t client_nbr, char *username)
 
 void login(server_t *server, size_t client_nbr, char **command)
 {
+    if (get_nb_word(command) != 2) {
+        send_message_to_client(server, client_nbr, "Invalid number of arguments");
+        return;
+    }
     if (server->clients_data[client_nbr].is_logged == FALSE) {
         if (command[1]) {
             log_user(server, client_nbr, command[1]);
         } else {
-            send_message_to_client(server, client_nbr, "No username provided\n");
+            send_message_to_client(server, client_nbr, "No username provided");
         }
     } else {
-        send_message_to_client(server, client_nbr, "Error user is alreay logged in\n");
+        send_message_to_client(server, client_nbr, "Error user is alreay logged in");
     }
 }
