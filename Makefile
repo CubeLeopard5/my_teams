@@ -1,6 +1,6 @@
 $@
 
-RULES = client server
+RULES = client server tests
 
 all: $(RULES)
 
@@ -10,5 +10,6 @@ $(RULES):
 re clean fclean all:
 	make -C client $@
 	make -C server $@
+	make -C tests $@
 
 .PHONY: $(RULES)
