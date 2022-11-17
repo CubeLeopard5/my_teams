@@ -19,9 +19,11 @@ void send_pvt(server_t *server, size_t client_nbr, char **command)
         send_message_to_client(server, client_nbr,
         "Invalid number of arguments");
     } else if (server->clients_data[client_nbr].is_logged == TRUE) {
-        nb_client = find_client(server, command[1]);
+        nb_client = find_client(server, command[1]); //Use the UUID to find the client to send the message
         if (nb_client != -1) {
             send_message_to_client(server, nb_client, command[2]);
+        } else {
+            send_message_to_client(server, client_nbr, "User not found");
         }
     } else {
         send_message_to_client(server, client_nbr,

@@ -21,7 +21,7 @@ int read_user_input(client_t *client)
     if (rd == -1) {
         perror("Unable to read\n");
         return 84;
-    } else if (rd == 0) {
+    } else if (rd == 0) { //Client asked for deconnection
         if (end_client(client) != 0) {
             return 84;
         }
@@ -36,15 +36,15 @@ int read_user_input(client_t *client)
 
 int loop_client(client_t *client)
 {
-    if (set_fd(client) != 0) {
+    if (set_fd(client) != 0) { //Reset the fd_set struct and use the select function
         return 84;
     }
-    if (FD_ISSET(STDIN_FILENO, &client->fds)) {
-        if (read_user_input(client) != 0) {
+    if (FD_ISSET(STDIN_FILENO, &client->fds)) { //Something has been rewritten on the standard input
+        if (read_user_input(client) != 0) { //Read input content and send it to server
             return 84;
         }
-    } else if (FD_ISSET(client->socket_fd, &client->fds)) {
-        if (receive_server_message(client) != 0) {
+    } else if (FD_ISSET(client->socket_fd, &client->fds)) { //Something has been received on our socket
+        if (receive_server_message(client) != 0) { //Read message from server
             return 84;
         }
     }

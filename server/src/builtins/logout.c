@@ -19,8 +19,8 @@ void quit(server_t *server, size_t client_nbr, char **command)
     if (get_nb_word(command) != 1) {
         send_message_to_client(server, client_nbr, "Invalid number of arguments");
     } else {
-        send_message_to_client(server, client_nbr, "quit");
-        disconnect_client(server, &server->client_socket[client_nbr]);
+        send_message_to_client(server, client_nbr, "quit"); //Ask the client to disconnect
+        disconnect_client(server, &server->client_socket[client_nbr]); //Close client socket on the server side
     }
 }
 
@@ -29,7 +29,7 @@ void logout(server_t *server, size_t client_nbr, char **command)
     if (get_nb_word(command) != 1) {
         send_message_to_client(server, client_nbr, "Invalid number of arguments");
     } else if (server->clients_data[client_nbr].is_logged == TRUE) {
-        init_client_data(&server->clients_data[client_nbr]);
+        init_client_data(&server->clients_data[client_nbr]); //Reset client struct
     } else {
         send_message_to_client(server, client_nbr, "User not logged");
     }

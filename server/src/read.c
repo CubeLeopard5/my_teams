@@ -2,14 +2,14 @@
 
 char *read_message_from_client(int fd)
 {
-    char *buffer = malloc(sizeof(char) * 1024);
+    char *buffer = (char *)malloc(sizeof(char) * 1024);
     int valread = -1;
 
-    valread = read(fd, buffer, 1024);
+    valread = read(fd, buffer, 1024); //Reading client input
     if (valread == -1) {
         perror("Error while reading client message\n");
         return NULL;
-    } else if (valread == 0) {
+    } else if (valread == 0) { //User asked for deconnection
         return NULL;
     } else {
         buffer[valread] = '\0';

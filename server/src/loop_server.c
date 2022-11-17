@@ -72,14 +72,14 @@ int input_output(server_t *server)
 
 int loop_server(server_t *server)
 {
-    get_max_socket_descriptor(server);
-    if (accept_incomming_actions(server) != 0) {
+    get_max_socket_descriptor(server); //Reset the fd_set struct and search for the max fd in all sockets. Set the new value for fd_set struct
+    if (accept_incomming_actions(server) != 0) { //Use of select function
         return 84;
     }
-    if (add_incomming_connection(server) != 0) {
+    if (add_incomming_connection(server) != 0) { //Check new client connection with accept function
         return 84;
     }
-    if (input_output(server) != 0) {
+    if (input_output(server) != 0) { //Read client request and exec command for response
         return 84;
     }
     return 0;

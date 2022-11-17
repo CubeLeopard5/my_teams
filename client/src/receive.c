@@ -10,7 +10,7 @@ int receive_server_message(client_t *client)
         perror("Error when receiving a message\n");
         return 84;
     }
-    if (len == 0) {
+    if (len == 0) { //Client asked for deconnection
         if (end_client(client) != 0) {
             return 84;
         }

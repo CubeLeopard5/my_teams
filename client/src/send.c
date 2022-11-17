@@ -2,7 +2,7 @@
 
 int send_message_to_server(client_t *client, char *msg)
 {
-    if (send(client->socket_fd, msg, strlen(msg), 0) < 0) {
+    if (send(client->socket_fd, msg, strlen(msg), 0) < 0) { //Send a message to the server
         perror("Unable to send message to server\n");
         return 84;
     }

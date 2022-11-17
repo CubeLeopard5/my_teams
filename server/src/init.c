@@ -20,7 +20,7 @@ int init_server_struct(server_t *server, int port)
 		return 84;
 	}
     server->address.sin_family = AF_INET;
-	server->address.sin_addr.s_addr = INADDR_ANY;
+	server->address.sin_addr.s_addr = INADDR_ANY; //Accept connection from anyone
 	server->address.sin_port = htons(port);
 	if (bind(server->master_socket, (struct sockaddr *)&server->address,
     sizeof(server->address)) < 0) {
