@@ -30,3 +30,11 @@ int init_server_struct(server_t *server, int port)
 	printf("Listener on port %d \n", port);
     return 0;
 }
+
+int init_reader_struct(reader_t *reader)
+{
+    reader->file = NULL;
+    reader->d = NULL;
+    reader->dir = NULL;
+    reader->buffer = NULL;
+}

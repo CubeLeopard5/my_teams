@@ -13,22 +13,35 @@
 #include <sys/time.h>
 #include <uuid/uuid.h>
 #include <ctype.h>
+#include <dirent.h>
+#include <sys/stat.h>
 	
 #define TRUE 1
 #define FALSE 0
 #define DEFAULT_PORT 4000
 #define MAX_CLIENTS 10
+#define CONV_DIR "./convs/"
+#define USERS_DIR "./users/"
+
+typedef struct reader_s
+{
+    FILE *file;
+    DIR *d;
+    struct dirent *dir;
+    char *buffer;
+}reader_t;
 
 typedef struct client_s
 {
     short is_logged;
     char *username;
     char *uuid;
-    int fd;
+    size_t fd;
 }client_t;
 
 typedef struct server_s
 {
+    int port;
     struct sockaddr_in address;
     int master_socket;
     int client_socket[MAX_CLIENTS];
@@ -38,7 +51,7 @@ typedef struct server_s
     client_t clients_data[MAX_CLIENTS];
 }server_t;
 
-static const char *ALLOWED_COMMANDS[] = {"/login", "/send", "/logout", "/quit", NULL};
+static const char *ALLOWED_COMMANDS[] = {"/help", "/login", "/send", "/logout", "/quit", "/users", "/user", NULL};
 
 int send_message_to_client(server_t *server, size_t client_nbr, char *msg);
 void login(server_t *server, size_t client_nbr, char **command);
@@ -54,6 +67,10 @@ int get_nb_word(char **tab);
 char *read_message_from_client(int fd);
 void logout(server_t *server, size_t client_nbr, char **command);
 void quit(server_t *server, size_t client_nbr, char **command);
+void help(server_t *server, size_t client_nbr, char **command);
+void display_users(server_t *server, size_t client_nbr, char **command);
+void display_user(server_t *server, size_t client_nbr, char **command);
 void init_client_data(client_t *client);
+int find_client(server_t *server, char *command);
 
 #endif

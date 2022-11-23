@@ -10,6 +10,7 @@ int log_user(server_t *server, size_t client_nbr, char *username)
     server->clients_data[client_nbr].is_logged = TRUE;
     server->clients_data[client_nbr].username = strdup(username);
     server->clients_data[client_nbr].uuid =  strdup(uuid);
+    server->clients_data[client_nbr].fd = client_nbr;
     send_message_to_client(server, client_nbr, uuid);
     return 0;
 }
