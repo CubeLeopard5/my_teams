@@ -14,11 +14,6 @@ int handle_arguments(int ac, char **av, server_t *server)
     return 0;
 }
 
-void lol(reader_t *reader, char *id)
-{
-    printf("FOUND\n");
-}
-
 int main(int ac , char **av)
 {
     /*server_t server;
@@ -38,6 +33,6 @@ int main(int ac , char **av)
     reader_t reader;
 
     init_reader_struct(&reader);
-    check_if_user_exist(&reader, "a", lol);
+    create_user_file("caca", "password", "AKJHAUODAO");
     return 0;
 }

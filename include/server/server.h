@@ -22,6 +22,10 @@
 #define MAX_CLIENTS 10
 #define CONV_DIR "./convs/"
 #define USERS_DIR "./users/"
+#define LENGTH 1024
+#define LOGIN "LOGIN="
+#define PASSWORD "PASSWORD="
+#define UUID "UUID="
 
 typedef struct reader_s
 {
@@ -72,5 +76,6 @@ void display_users(server_t *server, size_t client_nbr, char **command);
 void display_user(server_t *server, size_t client_nbr, char **command);
 void init_client_data(client_t *client);
 int find_client(server_t *server, char *command);
+char *create_uuid(void);
 
 #endif

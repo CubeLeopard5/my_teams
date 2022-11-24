@@ -61,6 +61,36 @@ char *read_first_line_of_file(FILE *file)
     return line;
 }
 
+char *read_value_from_field(char *str)
+{
+    char *buffer = malloc(sizeof(char) * strlen(str));
+    int i = 0;
+    int j = 0;
+
+    for (i; str[i] != '='; i++);
+    i -= -1;
+    for (i; str[i] != ';'; i++, j++) {
+        buffer[j] = str[i];
+    }
+    buffer[j] = '\0';
+    return buffer;
+}
+
+char *get_value_from_field(FILE *file, char *field)
+{
+    char *buffer = malloc(sizeof(char) * 1025);
+    char *rtn = NULL;
+
+    rewind(file);
+    while (fgets(buffer, 1024, file)) {
+        rtn = strstr(buffer, field);
+        if (rtn != NULL) {
+            return read_value_from_field(rtn);
+        }
+    }
+    return NULL;
+}
+
 char *concat(char *str1, char *str2)
 {
     char *rtn = malloc(sizeof(char) * (strlen(str1) + strlen(str2) + 1));
@@ -122,7 +152,7 @@ FILE *get_conv()
     }
 }
 
-int check_if_user_exist(reader_t *reader, char *id, void (*f)(reader_t *reader, char *id))
+int check_if_user_exist(reader_t *reader, char *id)
 {
     create_dir(USERS_DIR);
     reader->d = opendir(USERS_DIR);
@@ -135,10 +165,10 @@ int check_if_user_exist(reader_t *reader, char *id, void (*f)(reader_t *reader, 
                 if (reader->file == NULL) {
                     perror("Can't open file\n");
                 } else {
-                    reader->buffer = read_first_line_of_file(reader->file);
-                    if (strcmp(id, reader->buffer) == 0) {
-                        (*f)(reader, id);
-                    }
+                    char *password = get_value_from_field(reader->file, "PASSWORD=");
+                    printf("A = %s\n", password);
+                    char *login = get_value_from_field(reader->file, "LOGIN=");
+                    printf("A = %s\n", login);
                 }
                 fclose(reader->file);
             }
@@ -147,9 +177,14 @@ int check_if_user_exist(reader_t *reader, char *id, void (*f)(reader_t *reader, 
     }
 }
 
-int add_message_to_conv(char *uuid1, char *uuid2, char *msg)
+int create_user_file(char *username, char *password, char *uuid)
 {
+    FILE *file;
 
+    file = fopen(concat(concat(USERS_DIR, create_uuid()), ".txt"), "a+");
+    fprintf(file, concat(concat(LOGIN, username), ";\n"));
+    fprintf(file, concat(concat(PASSWORD, password), ";\n"));
+    fprintf(file, concat(concat(UUID, uuid), ";\n"));
 }
 
 void send_pvt(server_t *server, size_t client_nbr, char **command)

@@ -1,12 +1,19 @@
 #include "../../../include/server/server.h"
 
-int log_user(server_t *server, size_t client_nbr, char *username)
+char *create_uuid(void)
 {
     uuid_t binuuid; //Generate a UUID for the client to identify him
-    char uuid[40];
+    char *uuid = malloc(sizeof(char) * 40);
 
     uuid_generate_random(binuuid);
     uuid_unparse_upper(binuuid, uuid);
+    return uuid;
+}
+
+int log_user(server_t *server, size_t client_nbr, char *username)
+{
+    char *uuid = create_uuid();
+
     server->clients_data[client_nbr].is_logged = TRUE;
     server->clients_data[client_nbr].username = strdup(username);
     server->clients_data[client_nbr].uuid =  strdup(uuid);
