@@ -1,16 +1,5 @@
 #include "../../../include/server/server.h"
 
-int find_client(server_t *server, char *uuid)
-{
-    for (size_t i = 0; i < MAX_CLIENTS; i++) {
-        if (server->clients_data[i].is_logged &&
-        strcmp(server->clients_data[i].uuid, uuid) == 0) {
-            return i;
-        }
-    }
-    return -1;
-}
-
 int get_length_of_all_messages(char **strs, size_t nb_begin, size_t nb_end)
 {
     int nb = 0;
@@ -48,17 +37,6 @@ void create_dir(char *dir_name)
     if (stat(dir_name, &st) == -1) {
         mkdir(dir_name, 0700);
     }
-}
-
-char *read_first_line_of_file(FILE *file)
-{
-    char *line = NULL;
-    size_t len = 0;
-    ssize_t read;
-
-    read = getline(&line, &len, file);
-    line[read - 1] = '\0';
-    return line;
 }
 
 char *read_value_from_field(char *str)
@@ -115,49 +93,12 @@ const char *get_filename_ext(const char *filename) {
     return dot + 1;
 }
 
-FILE *get_conv()
-{
-    char uuid1[] = "a";
-    char uuid2[] = "b";
-    FILE *file = NULL;
-    DIR *d = NULL;
-    struct dirent *dir;
-    char *buffer = NULL;
-
-    create_dir(CONV_DIR);
-    d = opendir(CONV_DIR);
-    if (d == NULL) {
-        perror("Conv directory not found\n");
-    } else {
-        while ((dir = readdir(d)) != NULL) {
-            printf("A = %s\n", dir->d_name);
-            if (strcmp(get_filename_ext(dir->d_name), "txt") == 0) {
-                file = fopen(concat(CONV_DIR, dir->d_name), "a+");
-                if (file == NULL) {
-                    perror("Can't open file\n");
-                } else {
-                    printf("COUCOUC\n");
-                    buffer = read_first_line_of_file(file);
-                    printf("A = %s\n", buffer);
-                    if (strcmp(buffer, concat(concat(uuid1, ":"), uuid2)) == 0) {
-                        printf("GG\n");
-                        int a = fprintf(file, "Bite");
-                        printf("%d\n", a);
-                    }
-                }
-                fclose(file);
-            }
-        }
-        closedir(d);
-    }
-}
-
-int check_if_user_exist(reader_t *reader, char *id)
+int check_if_user_exists(reader_t *reader, char *id)
 {
     create_dir(USERS_DIR);
     reader->d = opendir(USERS_DIR);
     if (reader->d == NULL) {
-        perror("Conv directory not found\n");
+        perror("Users directory not found\n");
     } else {
         while ((reader->dir = readdir(reader->d)) != NULL) {
             if (strcmp(get_filename_ext(reader->dir->d_name), "txt") == 0) {
@@ -175,6 +116,7 @@ int check_if_user_exist(reader_t *reader, char *id)
         }
         closedir(reader->d);
     }
+    return 0;
 }
 
 int create_user_file(char *username, char *password, char *uuid)
@@ -194,8 +136,9 @@ void send_pvt(server_t *server, size_t client_nbr, char **command)
     if (get_nb_word(command) < 3) {
         send_message_to_client(server, client_nbr, "Invalid number of arguments");
     } else if (server->clients_data[client_nbr].is_logged == TRUE) {
-        nb_client = find_client(server, command[1]); //Use the UUID to find the client to send the message
+        nb_client = find_client_by_uuid(server, command[1]); //Use the UUID to find the client to send the message
         if (nb_client != -1) {
+            create_or_add_conv(server, client_nbr, nb_client);
             send_message_to_client(server, nb_client, concat_all_messages(command, 2, get_nb_word(command) - 1));
         } else {
             send_message_to_client(server, client_nbr, "User not found");

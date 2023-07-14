@@ -22,6 +22,8 @@ SRC 	= 	src/main.c 						\
 			src/str_to_word_tab.c			\
 			src/get_nb_word.c				\
 			src/read.c						\
+			src/create_or_add_conv.c		\
+			src/find_client.c				\
 
 OBJ	 = 	$(SRC:.c=.o)
 

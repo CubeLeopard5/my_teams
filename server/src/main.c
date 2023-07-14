@@ -16,7 +16,7 @@ int handle_arguments(int ac, char **av, server_t *server)
 
 int main(int ac , char **av)
 {
-    /*server_t server;
+    server_t server;
 
     handle_arguments(ac, av, &server);
     if (init_server_struct(&server, server.port) != 0) {
@@ -29,10 +29,11 @@ int main(int ac , char **av)
         if (loop_server(&server) != 0) {
             return 84;
         }
-    }*/
-    reader_t reader;
+    }
+    /*reader_t reader;
 
     init_reader_struct(&reader);
-    create_user_file("caca", "password", "AKJHAUODAO");
+    check_if_user_exists();
+    create_user_file("caca", "password", "AKJHAUODAO");*/
     return 0;
 }

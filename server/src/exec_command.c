@@ -7,7 +7,7 @@ int exec_command(server_t *server, size_t client_nbr, char **command)
 
     if (command == NULL || command[0] == NULL) {
         perror("No command entered\n");
-        return 84;
+        return 0;
     }
 
     for (size_t i = 0; ALLOWED_COMMANDS[i] != NULL; i++) {
@@ -17,5 +17,5 @@ int exec_command(server_t *server, size_t client_nbr, char **command)
         }
     }
     perror("No valid command found\n");
-    return 84;
+    return 0;
 }

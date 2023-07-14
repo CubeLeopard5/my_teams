@@ -8,7 +8,7 @@ void display_user(server_t *server, size_t client_nbr, char **command)
         send_message_to_client(server, client_nbr, "Invalid number of arguments");
         return;
     }
-    nb_client = find_client(server, command[1]);
+    nb_client = find_client_by_uuid(server, command[1]);
     if (nb_client != -1) {
         send_message_to_client(server, client_nbr, server->clients_data[nb_client].username);
     } else {

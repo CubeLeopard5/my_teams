@@ -75,7 +75,9 @@ void help(server_t *server, size_t client_nbr, char **command);
 void display_users(server_t *server, size_t client_nbr, char **command);
 void display_user(server_t *server, size_t client_nbr, char **command);
 void init_client_data(client_t *client);
-int find_client(server_t *server, char *command);
+int find_client_by_uuid(server_t *server, char *uuid);
 char *create_uuid(void);
+char *find_client_by_index(server_t *server, int index);
+void create_or_add_conv(server_t *server, int client_sender, int client_receiver);
 
 #endif
