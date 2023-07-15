@@ -30,10 +30,5 @@ int main(int ac , char **av)
             return 84;
         }
     }
-    /*reader_t reader;
-
-    init_reader_struct(&reader);
-    check_if_user_exists();
-    create_user_file("caca", "password", "AKJHAUODAO");*/
     return 0;
 }

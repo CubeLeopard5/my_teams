@@ -3,7 +3,7 @@
 int exec_command(server_t *server, size_t client_nbr, char **command)
 {
     void (*builtins_functions[])(server_t *server, size_t client_nbr,
-    char **command) = {&help, &login, &send_pvt, &logout, &quit, &display_users, &display_user, NULL}; //Function pointers void function() server_t *server, size_t client_nbr, char **command
+    char **command) = {&help, &login, &send_pvt, &logout, &quit, &display_users, &display_user, &display_conv, NULL}; //Function pointers void function() server_t *server, size_t client_nbr, char **command
 
     if (command == NULL || command[0] == NULL) {
         perror("No command entered\n");

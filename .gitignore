@@ -1,3 +1,7 @@
+# Folders to store conversations and users
+users/
+convs/
+
 # Prerequisites
 *.d
 

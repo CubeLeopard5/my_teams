@@ -55,7 +55,7 @@ typedef struct server_s
     client_t clients_data[MAX_CLIENTS];
 }server_t;
 
-static const char *ALLOWED_COMMANDS[] = {"/help", "/login", "/send", "/logout", "/quit", "/users", "/user", NULL};
+static const char *ALLOWED_COMMANDS[] = {"/help", "/login", "/send", "/logout", "/quit", "/users", "/user", "/conv", NULL};
 
 int send_message_to_client(server_t *server, size_t client_nbr, char *msg);
 void login(server_t *server, size_t client_nbr, char **command);
@@ -74,10 +74,14 @@ void quit(server_t *server, size_t client_nbr, char **command);
 void help(server_t *server, size_t client_nbr, char **command);
 void display_users(server_t *server, size_t client_nbr, char **command);
 void display_user(server_t *server, size_t client_nbr, char **command);
+void display_conv(server_t *server, size_t client_nbr, char **command);
 void init_client_data(client_t *client);
 int find_client_by_uuid(server_t *server, char *uuid);
 char *create_uuid(void);
 char *find_client_by_index(server_t *server, int index);
-void create_or_add_conv(server_t *server, int client_sender, int client_receiver);
+void create_or_add_conv(server_t *server, int client_sender, int client_receiver, char *msg);
+char *concat(char *str1, char *str2);
+void create_dir(char *dir_name);
+char *get_file_content(char *file_path);
 
 #endif

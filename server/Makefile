@@ -15,6 +15,7 @@ SRC 	= 	src/main.c 						\
 			src/builtins/display_users.c	\
 			src/builtins/display_user.c		\
 			src/builtins/login.c			\
+			src/builtins/display_conv.c		\
 			src/loop_server.c				\
 			src/remove_extra_spaces.c		\
 			src/send.c						\
@@ -24,6 +25,7 @@ SRC 	= 	src/main.c 						\
 			src/read.c						\
 			src/create_or_add_conv.c		\
 			src/find_client.c				\
+			src/manage_file.c				\
 
 OBJ	 = 	$(SRC:.c=.o)
 
