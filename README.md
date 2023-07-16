@@ -1,5 +1,8 @@
 # my_teams
 
+## Description
+This project his to make a server running on your local machine and a client that can connect to this server. The client can then login and send messages to other clients. It demonstrates the use of `select`, `send`, `read`, `bind` and `listen` functions.
+
 ## Requirements
 You need:
 - **gcc** to compile with the makefile
@@ -36,3 +39,30 @@ Choose the host and port number of an existing myteams_server running instance.
 To run the tests:
 
     ./run_tests
+
+## Program commands
+
+Display help:
+
+    /help
+Login with a username:
+
+    /login <username> #this will return you an uuid
+Send message to someone:
+
+    /send <uuid> <message>
+See all users information:
+
+    /users
+See one user information:
+
+    /user <uuid>
+See conersation with a user:
+
+    /conv <uuid>
+Logout:
+
+    /logout
+Quit the program:
+
+    /quit

@@ -23,17 +23,6 @@
 #define CONV_DIR "./convs/"
 #define USERS_DIR "./users/"
 #define LENGTH 1024
-#define LOGIN "LOGIN="
-#define PASSWORD "PASSWORD="
-#define UUID "UUID="
-
-typedef struct reader_s
-{
-    FILE *file;
-    DIR *d;
-    struct dirent *dir;
-    char *buffer;
-}reader_t;
 
 typedef struct client_s
 {
