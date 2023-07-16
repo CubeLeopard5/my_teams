@@ -57,7 +57,7 @@ See all users information:
 See one user information:
 
     /user <uuid>
-See conersation with a user:
+See conversation with a user:
 
     /conv <uuid>
 Logout:
