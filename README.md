@@ -1,7 +1,7 @@
 # my_teams
 
 ## Description
-This project his to make a server running on your local machine and a client that can connect to this server. The client can then login and send messages to other clients. It demonstrates the use of `select`, `send`, `read`, `bind` and `listen` functions.
+This project is to make a server running on your local machine and a client that can connect to this server. The client can then login and send messages to other clients. It demonstrates the use of `select`, `send`, `read`, `bind` and `listen` functions.
 
 ## Requirements
 You need:
