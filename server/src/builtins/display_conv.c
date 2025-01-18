@@ -19,7 +19,7 @@ void display_conv(server_t *server, size_t client_nbr, char **command) {
     char *conv_file = NULL;
 
     if (get_nb_word(command) != 2) {
-        send_message_to_client(server, client_nbr, "Invalid number of arguments");
+        send_message_to_client(server, client_nbr, INVALID_ARGS_NUMBER);
         return;
     } else if (server->clients_data[client_nbr].is_logged == TRUE) {
         conv_file = check_if_conv_exists(server->clients_data[client_nbr].uuid, command[1]);

@@ -2,10 +2,10 @@
 
 char *read_message_from_client(int fd)
 {
-    char *buffer = (char *)malloc(sizeof(char) * 1024);
+    char *buffer = (char *)malloc(sizeof(char) * MAX_MSG_LENGTH);
     int valread = -1;
 
-    valread = read(fd, buffer, 1024); //Reading client input
+    valread = read(fd, buffer, MAX_MSG_LENGTH); //Reading client input
     if (valread == -1) {
         perror("Error while reading client message\n");
         return NULL;

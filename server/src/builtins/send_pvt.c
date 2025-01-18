@@ -51,7 +51,7 @@ void send_pvt(server_t *server, size_t client_nbr, char **command)
     char *msg = NULL;
 
     if (get_nb_word(command) < 3) {
-        send_message_to_client(server, client_nbr, "Invalid number of arguments");
+        send_message_to_client(server, client_nbr, INVALID_ARGS_NUMBER);
     } else if (server->clients_data[client_nbr].is_logged == TRUE) {
         nb_client = find_client_by_uuid(server, command[1]); //Use the UUID to find the client to send the message
         if (nb_client != -1) {
@@ -59,9 +59,9 @@ void send_pvt(server_t *server, size_t client_nbr, char **command)
             create_or_add_conv(server, client_nbr, nb_client, msg);
             send_message_to_client(server, nb_client, msg);
         } else {
-            send_message_to_client(server, client_nbr, "User not found");
+            send_message_to_client(server, client_nbr, USER_NOT_FOUND);
         }
     } else {
-        send_message_to_client(server, client_nbr, "You need to be logged before sending a message");
+        send_message_to_client(server, client_nbr, "Error, you need to be logged before sending a message");
     }
 }

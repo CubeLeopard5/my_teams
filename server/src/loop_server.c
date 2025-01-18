@@ -35,9 +35,7 @@ int add_incomming_connection(server_t *server)
             perror("Unable to accept client\n");
             return 84;
         }
-        printf("New connection, socket fd is %d, ip is: %s, port: %d\n",
-        new_socket, inet_ntoa(server->address.sin_addr),
-        ntohs(server->address.sin_port));
+        print_new_connection_data(new_socket, server);
         for (size_t i = 0; i < MAX_CLIENTS; i++) {
             if (server->client_socket[i] == 0) {
                 server->client_socket[i] = new_socket;
@@ -49,9 +47,11 @@ int add_incomming_connection(server_t *server)
     return 0;
 }
 
-int input_output(server_t *server)
+int process_client_request(server_t *server)
 {
     char *buffer;
+    char *cleaned_buffer;
+    char **cmd;
 
     for (size_t i = 0; i < MAX_CLIENTS; i++) {
         if (FD_ISSET(server->client_socket[i], &server->readfds)) {
@@ -61,7 +61,9 @@ int input_output(server_t *server)
                     return 84;
                 }
             } else {
-                if (exec_command(server, i, str_to_word_tab(remove_extra_spaces(buffer), " ")) == 84) {
+                cleaned_buffer = remove_extra_spaces(buffer);
+                cmd = str_to_word_tab(cleaned_buffer, " ");
+                if (exec_command(server, i, cmd) == 84) {
                     return 84;
                 }
             }
@@ -73,13 +75,13 @@ int input_output(server_t *server)
 int loop_server(server_t *server)
 {
     get_max_socket_descriptor(server); //Reset the fd_set struct and search for the max fd in all sockets. Set the new value for fd_set struct
-    if (accept_incomming_actions(server) != 0) { //Use of select function
+    if (accept_incomming_actions(server) != 0) {
         return 84;
     }
     if (add_incomming_connection(server) != 0) { //Check new client connection with accept function
         return 84;
     }
-    if (input_output(server) != 0) { //Read client request and exec command for response
+    if (process_client_request(server) != 0) { //Read client request and exec command for response
         return 84;
     }
     return 0;

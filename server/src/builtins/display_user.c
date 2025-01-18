@@ -5,7 +5,7 @@ void display_user(server_t *server, size_t client_nbr, char **command)
     int nb_client = -1;
 
     if (get_nb_word(command) != 2) {
-        send_message_to_client(server, client_nbr, "Invalid number of arguments");
+        send_message_to_client(server, client_nbr, INVALID_ARGS_NUMBER);
         return;
     }
     nb_client = find_client_by_uuid(server, command[1]);

@@ -22,7 +22,9 @@
 #define MAX_CLIENTS 10
 #define CONV_DIR "./convs/"
 #define USERS_DIR "./users/"
-#define LENGTH 1024
+#define MAX_MSG_LENGTH 1024
+#define INVALID_ARGS_NUMBER "Error, invalid number of arguments"
+#define USER_NOT_FOUND "Error, user not found"
 
 typedef struct client_s
 {
@@ -49,7 +51,7 @@ static const char *ALLOWED_COMMANDS[] = {"/help", "/login", "/send", "/logout", 
 int send_message_to_client(server_t *server, size_t client_nbr, char *msg);
 void login(server_t *server, size_t client_nbr, char **command);
 void send_pvt(server_t *server, size_t client_nbr, char **command);
-int listening(server_t *server);
+int start_listening(server_t *server);
 int init_server_struct(server_t *server, int port);
 char **str_to_word_tab(char *str, char *delim);
 int exec_command(server_t *server, size_t client_nbr, char **command);
@@ -64,7 +66,7 @@ void help(server_t *server, size_t client_nbr, char **command);
 void display_users(server_t *server, size_t client_nbr, char **command);
 void display_user(server_t *server, size_t client_nbr, char **command);
 void display_conv(server_t *server, size_t client_nbr, char **command);
-void init_client_data(client_t *client);
+void init_clients_data(client_t *client);
 int find_client_by_uuid(server_t *server, char *uuid);
 char *create_uuid(void);
 char *find_client_by_index(server_t *server, int index);
@@ -72,5 +74,10 @@ void create_or_add_conv(server_t *server, int client_sender, int client_receiver
 char *concat(char *str1, char *str2);
 void create_dir(char *dir_name);
 char *get_file_content(char *file_path);
+int is_there_port_arg(char * arg);
+int handle_arguments(int ac, char **av, server_t *server);
+int process_client_request(server_t *server);
+void print_disconnection(server_t *server);
+void print_new_connection_data(int new_socket, server_t *server);
 
 #endif

@@ -1,6 +1,6 @@
 #include "../../include/server/server.h"
 
-int listening(server_t *server)
+int start_listening(server_t *server)
 {
     int on = 1;
     int rc = 1;
@@ -12,9 +12,10 @@ int listening(server_t *server)
     server->addrlen = sizeof(server->address);
     rc = setsockopt(server->master_socket, SOL_SOCKET,  SO_REUSEADDR, (char *)&on, sizeof(on));
     if (rc < 0) {
-        perror("setsockopt() failed");
+        perror("setsockopt() failed\n");
         close(server->master_socket);
         return 84;
     }
+    printf("The server is now listening for connections\n");
     return 0;
 }
