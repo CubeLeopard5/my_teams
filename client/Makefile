@@ -6,22 +6,25 @@ CP  	= cp
 
 CFLAG	=	-g3 -Wall -Wextra -luuid
 
-SRC 	= 	src/main.c 					\
-			src/send.c					\
-			src/receive.c				\
-			src/loop_client.c			\
-			src/init.c					\
-			src/disconnect.c			\
-			src/connect.c				\
-			src/builtins/quit.c			\
-			src/exec_command.c			\
+SRC 	= 	src/main.c 								\
+			src/send.c								\
+			src/receive.c							\
+			src/loop_client.c						\
+			src/init_client_struct.c				\
+			src/disconnect.c						\
+			src/connect.c							\
+			src/builtins/quit.c						\
+			src/exec_command.c						\
+			src/frontend/init_frontend_struct.c		\
 
 OBJ	 = 	$(SRC:.c=.o)
+
+LDLIBS = -lraylib -lglfw -lGL -lopenal -lm
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(CFLAG)
+	$(CC) $(OBJ) -o $(NAME) $(CFLAG) $(LDLIBS)
 	$(CP) $(NAME) ../
 
 clean:

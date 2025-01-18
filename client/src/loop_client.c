@@ -5,7 +5,7 @@ int set_fd(client_t *client)
     FD_ZERO(&client->fds);
     FD_SET(STDIN_FILENO, &client->fds);
     FD_SET(client->socket_fd, &client->fds);
-    if (select(client->socket_fd + 1, &client->fds, NULL, NULL, NULL) == -1) {
+    if (select(client->socket_fd + 1, &client->fds, NULL, NULL, &client->tv) == -1) {
         perror("Unable to use select\n");
         return 84;
     }

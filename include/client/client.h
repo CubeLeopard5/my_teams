@@ -14,7 +14,7 @@
 	
 #define TRUE 1
 #define FALSE 0
-#define MAX_LENGTH 2048
+#define MAX_LENGTH 1024
 
 typedef struct client_s
 {
@@ -24,12 +24,13 @@ typedef struct client_s
     char *username;
     int socket_fd;
     short is_logged;
+    struct timeval tv;
 }client_t;
 
 static const char *ALLOWED_COMMANDS[] = {"quit", NULL};
 
 int end_client(client_t *client);
-int init_struct_client(client_t *client, char *ip, int port);
+int init_client_struct(client_t *client, char *ip, int port);
 int loop_client(client_t *client);
 int connect_to_server(client_t *client);
 int send_message_to_server(client_t *client, char *msg);

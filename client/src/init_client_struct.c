@@ -1,7 +1,9 @@
 #include "../../include/client/client.h"
 
-int init_struct_client(client_t *client, char *ip, int port)
+int init_client_struct(client_t *client, char *ip, int port)
 {
+    client->tv.tv_sec = 0;
+    client->tv.tv_usec = 0;
     client->is_logged = FALSE;
     client->username = NULL;
     client->uuid = NULL;
