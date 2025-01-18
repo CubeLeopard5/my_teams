@@ -15,7 +15,6 @@ SRC 	= 	src/main.c 								\
 			src/connect.c							\
 			src/builtins/quit.c						\
 			src/exec_command.c						\
-			src/frontend/init_frontend_struct.c		\
 
 OBJ	 = 	$(SRC:.c=.o)
 
