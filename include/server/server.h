@@ -57,6 +57,7 @@ char *create_uuid(void);
 void create_or_add_conv(server_t *server, int client_sender, int client_receiver, char *msg);
 char *concat(char *str1, char *str2);
 char *concat_all_messages(char **strs, size_t nb_begin, size_t nb_end);
+int disconnect_client(server_t *server, int *fd);
 void display_conv(server_t *server, size_t client_nbr, char **command);
 void display_user(server_t *server, size_t client_nbr, char **command);
 void display_users(server_t *server, size_t client_nbr, char **command);
@@ -78,11 +79,11 @@ int process_client_request(server_t *server);
 void print_disconnection(server_t *server);
 void print_new_connection_data(int new_socket, server_t *server);
 void quit(server_t *server, size_t client_nbr, char **command);
-int remove_extra_spaces(char *str);
+char *remove_extra_spaces(char *str);
 int send_message_to_client(server_t *server, size_t client_nbr, char *msg);
 void send_pvt(server_t *server, size_t client_nbr, char **command);
 int start_listening(server_t *server);
-int str_to_word_tab(char *str, char *delim);
+char **str_to_word_tab(char *str, char *delim);
 char *read_message_from_client(int fd);
 
 

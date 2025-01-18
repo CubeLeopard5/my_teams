@@ -1,4 +1,4 @@
-#include "../../../include/server/server.h"
+#include "../../include/server/server.h"
 
 int get_length_of_all_messages(char **strs, size_t nb_begin, size_t nb_end)
 {

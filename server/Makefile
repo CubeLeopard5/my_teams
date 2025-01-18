@@ -8,7 +8,7 @@ CFLAG	=	-g3 -Wall -Wextra -luuid $(LIBS)
 
 SRC 	= 	src/main.c 						\
 			src/exec_command.c				\
-			src/init.c						\
+			src/init_server_struct.c		\
 			src/listening.c					\
 			src/builtins/logout.c			\
 			src/builtins/help.c				\
@@ -16,6 +16,7 @@ SRC 	= 	src/main.c 						\
 			src/builtins/display_user.c		\
 			src/builtins/login.c			\
 			src/builtins/display_conv.c		\
+			src/builtins/quit.c				\
 			src/loop_server.c				\
 			src/remove_extra_spaces.c		\
 			src/send.c						\
@@ -28,6 +29,7 @@ SRC 	= 	src/main.c 						\
 			src/manage_file.c				\
 			src/print_data.c				\
 			src/concat.c					\
+			src/handle_arguments.c			\
 
 OBJ	 = 	$(SRC:.c=.o)
 
