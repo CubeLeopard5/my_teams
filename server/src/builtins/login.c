@@ -25,12 +25,12 @@ int log_user(server_t *server, size_t client_nbr, char *username)
 void login(server_t *server, size_t client_nbr, char **command)
 {
     if (get_nb_word(command) != 2) {
-        send_message_to_client(server, client_nbr, INVALID_ARGS_NUMBER);
+        send_message_to_client(server, client_nbr, ERR_INVALID_ARGS_NUMBER);
         return;
     }
     if (server->clients_data[client_nbr].is_logged == FALSE) {
         log_user(server, client_nbr, command[1]);
     } else {
-        send_message_to_client(server, client_nbr, "Error, user is alreay logged in");
+        send_message_to_client(server, client_nbr, ERR_ALREADY_LOGGED);
     }
 }

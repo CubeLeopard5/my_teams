@@ -3,7 +3,7 @@
 void display_users(server_t *server, size_t client_nbr, char **command)
 {
     if (get_nb_word(command) != 1) {
-        send_message_to_client(server, client_nbr, INVALID_ARGS_NUMBER);
+        send_message_to_client(server, client_nbr, ERR_INVALID_ARGS_NUMBER);
         return;
     }
     for (size_t i = 0; i < MAX_CLIENTS; i++) {

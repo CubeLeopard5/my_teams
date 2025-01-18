@@ -27,6 +27,7 @@ SRC 	= 	src/main.c 						\
 			src/find_client.c				\
 			src/manage_file.c				\
 			src/print_data.c				\
+			src/concat.c					\
 
 OBJ	 = 	$(SRC:.c=.o)
 
