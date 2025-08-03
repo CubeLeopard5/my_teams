@@ -27,16 +27,17 @@ char **str_to_word_tab(char *str, char *delim)
     int nb = nb_word(str);
     char **tab = create_2d_array(nb + 1);
     char *token;
+    char *saveptr;
     int i = 0;
 
-    token = strtok(str, delim);
+    token = strtok_r(str, delim, &saveptr);
     while(token != NULL) {
         if (i >= nb) {
             break;
         }
         tab[i] = strdup(token);
         i++;
-        token = strtok(NULL, delim);
+        token = strtok_r(NULL, delim, &saveptr);
     }
     return tab;
 }
