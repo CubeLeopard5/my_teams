@@ -31,6 +31,9 @@ char **str_to_word_tab(char *str, char *delim)
 
     token = strtok(str, delim);
     while(token != NULL) {
+        if (i >= nb) {
+            break;
+        }
         tab[i] = strdup(token);
         i++;
         token = strtok(NULL, delim);

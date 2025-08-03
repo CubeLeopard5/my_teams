@@ -5,7 +5,6 @@ char *remove_extra_spaces(char *str)
     char *new_string = malloc(sizeof(char) * strlen(str));
     int i = 0;
     int j = 0;
-    int lastChar = 0;
 
     for (i; str[i] == ' '; i++);
     while (str[i] != '\0') {
@@ -21,8 +20,7 @@ char *remove_extra_spaces(char *str)
             i++;
             j++;
         }
-        lastChar = j - 1;
     }
-    new_string[lastChar] = '\0';
+    new_string[--j] = '\0';
     return new_string;
 }
