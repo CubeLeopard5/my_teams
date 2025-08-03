@@ -18,7 +18,7 @@ SRC 	= 	src/main.c 								\
 
 OBJ	 = 	$(SRC:.c=.o)
 
-LDLIBS = -lraylib -lglfw -lGL -lopenal -lm
+LDLIBS = -lGL -lopenal -lm
 
 all: $(NAME)
 

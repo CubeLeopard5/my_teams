@@ -1,6 +1,6 @@
 #include "../../../include/client/client.h"
 
-void quit(client_t *client, char *command)
+void quit(client_t *client, [[maybe_unused]] char *command)
 {
     end_client(client);
     exit(0);

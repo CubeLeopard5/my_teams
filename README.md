@@ -66,3 +66,40 @@ Logout:
 Quit the program:
 
     /quit
+
+
+## SonarQube
+
+### Create SonarQube
+
+# Create pod
+podman pod create --name sonar -p 9000:9000
+
+# Start PostgreSQL
+podman run -d \
+  --name sonarqube-postgres \
+  --pod sonar \
+  -e POSTGRES_USER=sonar \
+  -e POSTGRES_PASSWORD=sonar \
+  -e POSTGRES_DB=sonarqube \
+  -v pg_data:/var/lib/postgresql/data \
+  docker.io/postgres:15
+
+# Give PostgreSQL a few seconds to start
+
+# Start SonarQube
+podman run -d \
+  --name sonarqube \
+  --pod sonar \
+  -e SONAR_JDBC_URL=jdbc:postgresql://localhost:5432/sonarqube \
+  -e SONAR_JDBC_USERNAME=sonar \
+  -e SONAR_JDBC_PASSWORD=sonar \
+  -v sonarqube_data:/opt/sonarqube/data \
+  -v sonarqube_extensions:/opt/sonarqube/extensions \
+  -v sonarqube_logs:/opt/sonarqube/logs \
+  docker.io/sonarqube:community
+
+
+Look at http://localhost:9000/ and use admin / admin to login
+
+Sinon utilisez: https://sonarcloud.io/projects
