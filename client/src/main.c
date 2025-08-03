@@ -3,6 +3,7 @@
 int main(int ac, char **av)
 {
     client_t client;
+    int result;
 
     if (ac != 3 || atoi(av[1]) == 0 || atoi(av[2]) == 0) {
         perror("Invalid arguments\n");
@@ -14,12 +15,8 @@ int main(int ac, char **av)
     if (connect_to_server(&client) != 0) {
         return 84;
     }
-    
-    while (1)
-    {
-        if (loop_client(&client) != 0) {
-            return 84;
-        }
+    while ((result = loop_client(&client)) == 0) {
+
     }
-    return 0;
+    return (result > 0) ? 84 : 0;
 }
