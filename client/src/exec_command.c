@@ -10,10 +10,10 @@ int exec_command(client_t *client, char *command)
         return 84;
     }
 
-    for (size_t i = 0; ALLOWED_COMMANDS[i] != NULL; i++) {
+    for (size_t i = 0; i < sizeof(ALLOWED_COMMANDS)/sizeof(ALLOWED_COMMANDS[0]) - 1; i++) {
         if (strcmp(ALLOWED_COMMANDS[i], command) == 0) {
             (*builtins_functions[i])(client, command);
-            return i;
+            return 1;
         }
     }
     return 0;
