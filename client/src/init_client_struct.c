@@ -1,6 +1,6 @@
 #include "../../include/client/client.h"
 
-int init_client_struct(client_t *client, char *ip, int port)
+int init_client_struct(client_t *client, const char *ip, int port)
 {
     client->tv.tv_sec = 0;
     client->tv.tv_usec = 0;

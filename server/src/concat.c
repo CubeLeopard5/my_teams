@@ -30,7 +30,7 @@ char *concat_all_messages(char **strs, size_t nb_begin, size_t nb_end)
     return message;
 }
 
-char *concat(char *str1, char *str2)
+char *concat(const char *str1, const char *str2)
 {
     char *rtn = malloc(sizeof(char) * (strlen(str1) + strlen(str2) + 1));
     int nb = 0;

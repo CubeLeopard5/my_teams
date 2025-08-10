@@ -2,7 +2,7 @@
 
 int exec_command(client_t *client, char *command)
 {
-    void (*builtins_functions[])(client_t *client, char *command)
+    void (*builtins_functions[])(client_t *client, const char *command)
     = {&quit, NULL};
 
     if (command == NULL) {

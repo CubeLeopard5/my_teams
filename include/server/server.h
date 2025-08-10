@@ -55,7 +55,7 @@ static const char *ALLOWED_COMMANDS[] = {"/help", "/login", "/send", "/logout", 
 void create_dir(char *dir_name);
 char *create_uuid(void);
 void create_or_add_conv(server_t *server, int client_sender, int client_receiver, char *msg);
-char *concat(char *str1, char *str2);
+char *concat(const char *str1, const char *str2);
 char *concat_all_messages(char **strs, size_t nb_begin, size_t nb_end);
 int disconnect_client(server_t *server, int *fd);
 void display_conv(server_t *server, size_t client_nbr, char **command);

@@ -30,12 +30,12 @@ typedef struct client_s
 static const char *ALLOWED_COMMANDS[] = {"quit", NULL};
 
 int end_client(client_t *client);
-int init_client_struct(client_t *client, char *ip, int port);
+int init_client_struct(client_t *client, const char *ip, int port);
 int loop_client(client_t *client);
 int connect_to_server(client_t *client);
-int send_message_to_server(client_t *client, char *msg);
+int send_message_to_server(const client_t *client, const char *msg);
 int receive_server_message(client_t *client);
-void quit(client_t *client, char *command);
+void quit(client_t *client, const char *command);
 int exec_command(client_t *client, char *command);
 
 #endif

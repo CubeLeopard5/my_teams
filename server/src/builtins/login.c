@@ -10,7 +10,7 @@ char *create_uuid(void)
     return uuid;
 }
 
-int log_user(server_t *server, size_t client_nbr, char *username)
+int log_user(server_t *server, size_t client_nbr, const char *username)
 {
     char *uuid = create_uuid();
 
