@@ -12,7 +12,8 @@ char **create_2d_array(int nb)
 
 int count_tokens(const char *str, const char *delim) {
     char *tmp = strdup(str);
-    char *saveptr, *token;
+    char *saveptr;
+    char *token;
     int count = 0;
 
     token = strtok_r(tmp, delim, &saveptr);

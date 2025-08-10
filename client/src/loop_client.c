@@ -39,14 +39,12 @@ int loop_client(client_t *client)
     if (set_fd(client) != 0) { //Reset the fd_set struct and use the select function
         return 84;
     }
-    if (FD_ISSET(STDIN_FILENO, &client->fds)) { //Something has been rewritten on the standard input
-        if (read_user_input(client) != 0) { //Read input content and send it to server
-            return 84;
-        }
-    } else if (FD_ISSET(client->socket_fd, &client->fds)) { //Something has been received on our socket
-        if (receive_server_message(client) != 0) { //Read message from server
-            return 84;
-        }
+    if (FD_ISSET(STDIN_FILENO, &client->fds) //Something has been rewritten on the standard input
+        && read_user_input(client) != 0) { //Read input content and send it to server
+        return 84;
+    } else if (FD_ISSET(client->socket_fd, &client->fds) //Something has been received on our socket
+        && receive_server_message(client) != 0) { //Read message from server
+        return 84;
     }
     return 0;
 }

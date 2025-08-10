@@ -15,8 +15,6 @@ int main(int ac, char **av)
     if (connect_to_server(&client) != 0) {
         return 84;
     }
-    while ((result = loop_client(&client)) == 0) {
-
-    }
+    while ((result = loop_client(&client)) == 0);
     return (result > 0) ? 84 : 0;
 }
