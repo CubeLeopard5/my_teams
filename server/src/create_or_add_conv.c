@@ -15,9 +15,15 @@ char *get_conv_file_name(char *uuid_sender, char *uuid_receiver) {
 
 void add_conv(char *file_path, char *msg) {
     FILE *fp;
+    char *line = concat(msg, "\n");
 
     fp = fopen(file_path, "a+");
-    fprintf(fp, concat(msg, ";\n"));
+    if (fp == NULL) {
+        perror("Unable to add message to the conversation file\n");
+        return;
+    }
+    fprintf(fp, "%s", line);
+    free(line);
     fclose(fp);
 }
 

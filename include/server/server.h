@@ -76,6 +76,7 @@ void login(server_t *server, size_t client_nbr, char **command);
 void logout(server_t *server, size_t client_nbr, char **command);
 int loop_server(server_t *server);
 int process_client_request(server_t *server);
+int process_client_request_action(server_t *server, size_t i);
 void print_disconnection(server_t *server);
 void print_new_connection_data(int new_socket, server_t *server);
 void quit(server_t *server, size_t client_nbr, char **command);

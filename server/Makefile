@@ -30,6 +30,7 @@ SRC 	= 	src/main.c 						\
 			src/print_data.c				\
 			src/concat.c					\
 			src/handle_arguments.c			\
+			src/process_client_request.c	\
 
 OBJ	 = 	$(SRC:.c=.o)
 
