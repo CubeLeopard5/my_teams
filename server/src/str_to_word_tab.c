@@ -1,17 +1,5 @@
 #include "../../include/server/server.h"
 
-int nb_word(const char * str)
-{
-    int nb = 0;
-
-    for (size_t i = 0; str[i] != '\0'; i++) {
-        if (str[i] == ' ') {
-            nb++;
-        }
-    }
-    return nb + 1;
-}
-
 char **create_2d_array(int nb)
 {
     char **tab = (char **)calloc(nb, sizeof(char *));
@@ -22,21 +10,30 @@ char **create_2d_array(int nb)
     return tab;
 }
 
-char **str_to_word_tab(char *str, char *delim)
-{
-    int nb = nb_word(str);
+int count_tokens(const char *str, const char *delim) {
+    char *tmp = strdup(str);
+    char *saveptr, *token;
+    int count = 0;
+
+    token = strtok_r(tmp, delim, &saveptr);
+    while (token != NULL) {
+        count++;
+        token = strtok_r(NULL, delim, &saveptr);
+    }
+    free(tmp);
+    return count;
+}
+
+char **str_to_word_tab(char *str, char *delim) {
+    int nb = count_tokens(str, delim);
     char **tab = create_2d_array(nb + 1);
-    char *token;
     char *saveptr;
+    char *token;
     int i = 0;
 
     token = strtok_r(str, delim, &saveptr);
-    while(token != NULL) {
-        if (i >= nb) {
-            break;
-        }
-        tab[i] = strdup(token);
-        i++;
+    while (token != NULL) {
+        tab[i++] = strdup(token);
         token = strtok_r(NULL, delim, &saveptr);
     }
     return tab;

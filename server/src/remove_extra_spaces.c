@@ -22,7 +22,7 @@ char *remove_extra_spaces(char *str)
         }
     }
     if (j > 0) {
-        new_string[--j] = '\0';
+        new_string[j - 1] = '\0';
     } else {
         new_string[0] = '\0';
     }
